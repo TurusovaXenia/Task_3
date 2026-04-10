@@ -1,8 +1,10 @@
 import pytest
 from selenium import webdriver
 
-from stellar_burgers.application import Application
-from stellar_burgers.urls import Urls
+from api.api_client import ApiClient
+from pages.application import Application
+from urls import Urls
+from utils import helpers
 
 
 @pytest.fixture(params=["chrome", "firefox"], scope="function")
@@ -16,3 +18,26 @@ def app(request):
     yield app_instance
 
     driver.quit()
+
+
+@pytest.fixture(scope="function")
+def api_client():
+    return ApiClient(Urls.BASE_URL)
+
+
+@pytest.fixture(scope="function")
+def user_for_test(api_client):
+    new_user_data = helpers.generate_new_user()
+    response = api_client.create_user(new_user_data)
+    access_token = response.json().get("accessToken")
+    setup_data = {
+        "access_token": access_token,
+        "name": new_user_data["name"],
+        "email": new_user_data["email"],
+        "password": new_user_data["password"],
+    }
+
+    yield setup_data
+
+    if access_token:
+        api_client.delete_user(access_token)
