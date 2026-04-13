@@ -5,8 +5,23 @@ from selenium.webdriver.support.wait import WebDriverWait
 class BasePage:
     def __init__(self, driver, base_url):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, 30)
         self.base_url = base_url
+
+    _DRAG_AND_DROP_SCRIPT = """
+        var source = arguments[0];
+        var target = arguments[1];
+        var dataTransfer = new DataTransfer();
+
+        var dragStartEvent = new DragEvent('dragstart', { dataTransfer: dataTransfer, bubbles: true });
+        source.dispatchEvent(dragStartEvent);
+
+        var dropEvent = new DragEvent('drop', { dataTransfer: dataTransfer, bubbles: true });
+        target.dispatchEvent(dropEvent);
+
+        var dragEndEvent = new DragEvent('dragend', { dataTransfer: dataTransfer, bubbles: true });
+        source.dispatchEvent(dragEndEvent);
+        """
 
     def open(self, path=""):
         self.driver.get(f"{self.base_url}{path}")
@@ -26,7 +41,6 @@ class BasePage:
         return self.driver.find_element(*locator)
 
     def check_element_visibility(self, locator):
-        self.wait_until_visible(locator)
         return self.driver.find_element(*locator).is_displayed()
 
     def fill_input(self, locator, text):
@@ -38,3 +52,9 @@ class BasePage:
             lambda d: value in d.find_element(*locator).get_attribute(attribute),
             message=f"Элемент {locator} не получил атрибут {attribute}='{value}'"
         )
+
+    def drag_and_drop(self, source_element, target_element):
+        self.driver.execute_script(self._DRAG_AND_DROP_SCRIPT, source_element, target_element)
+
+    def get_text_from_element(self, locator):
+        return self.find_element_with_wait(locator).text

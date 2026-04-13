@@ -4,6 +4,7 @@ from pages.base_page import BasePage
 
 class ProfilePage(BasePage):
     def is_profile_form_visible(self):
+        self.wait_until_visible(ProfilePageLocators.PROFILE_FORM)
         return self.check_element_visibility(ProfilePageLocators.PROFILE_FORM)
 
     def click_order_history_button(self):

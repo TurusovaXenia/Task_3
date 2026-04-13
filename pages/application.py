@@ -2,9 +2,10 @@ from pages.forgot_password_page import ForgotPasswordPage
 from pages.header import Header
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
+from pages.order_feed_page import OrderFeedPage
+from pages.order_history_page import OrderHistoryPage
 from pages.profile_page import ProfilePage
 from pages.reset_password_page import ResetPasswordPage
-from pages.order_history_page import OrderHistoryPage
 
 
 class Application:
@@ -15,6 +16,11 @@ class Application:
     @property
     def login_page(self):
         return LoginPage(self._driver, self._base_url)
+
+    def login(self, user_data):
+        self.login_page.login(user_data)
+        self.home_page.wait_for_load()
+        return self.home_page
 
     @property
     def forgot_password_page(self):
@@ -39,3 +45,7 @@ class Application:
     @property
     def orders_history_page(self):
         return OrderHistoryPage(self._driver, self._base_url)
+
+    @property
+    def order_feed_page(self):
+        return OrderFeedPage(self._driver, self._base_url)

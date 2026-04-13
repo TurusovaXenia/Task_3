@@ -15,7 +15,7 @@ class LoginPage(BasePage):
     def click_login_button(self):
         self.click_element(LoginPageLocators.LOGIN_BUTTON)
 
-    def login_into_system(self, user_data):
+    def login(self, user_data):
         self.fill_email_field(user_data["email"])
         self.fill_password_field(user_data["password"])
         self.click_login_button()

@@ -1,7 +1,6 @@
 import requests
 
 from urls import Urls
-from utils import helpers
 
 
 class ApiClient:
