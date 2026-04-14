@@ -1,7 +1,7 @@
 class TestProfilePage:
     def test_click_profile_button_redirects_to_profile_page(self, app, user_for_test):
-        app.home_page.open()
-        app.home_page.click_login_button()
+        app.constructor_page.open()
+        app.constructor_page.click_login_button()
         app.login(user_for_test)
         app.header.click_my_profile_button()
 
@@ -16,7 +16,7 @@ class TestProfilePage:
             "Переход на страницу 'История заказов' не выполнен"
 
     def test_click_logout_button_redirects_to_login_page(self, app, user_for_test):
-        app.home_page.open()
+        app.constructor_page.open()
         app.login_page.click_login_button()
         app.login(user_for_test)
         app.header.click_my_profile_button()

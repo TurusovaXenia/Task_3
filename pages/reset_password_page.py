@@ -7,7 +7,6 @@ from pages.base_page import BasePage
 
 class ResetPasswordPage(BasePage):
     def click_show_password_button(self):
-        self.wait_until_invisibility(ForgotPasswordPageLocators.MODAL_OVERLAY)
         self.click_element(ResetPasswordPageLocators.SHOW_PASSWORD_BUTTON)
 
     def is_password_field_highlighted(self):

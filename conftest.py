@@ -46,11 +46,11 @@ def user_for_test(api_client):
 
 @pytest.fixture(scope="function")
 def created_order(app, user_for_test):
-    app.home_page.open()
+    app.constructor_page.open()
     app.login_page.click_login_button()
     app.login(user_for_test)
-    app.home_page.drag_first_ingredient_and_drop_to_basket()
-    app.home_page.click_create_order_button()
-    order_id = app.home_page.get_order_id()
-    app.home_page.click_cross_button_for_order()
+    app.constructor_page.drag_first_ingredient_and_drop_to_basket()
+    app.constructor_page.click_create_order_button()
+    order_id = app.constructor_page.get_order_id()
+    app.constructor_page.click_cross_button_for_order()
     return order_id

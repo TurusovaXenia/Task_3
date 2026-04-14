@@ -1,6 +1,6 @@
 from pages.forgot_password_page import ForgotPasswordPage
 from pages.header import Header
-from pages.home_page import HomePage
+from pages.constructor_page import ConstructorPage
 from pages.login_page import LoginPage
 from pages.order_feed_page import OrderFeedPage
 from pages.order_history_page import OrderHistoryPage
@@ -19,16 +19,16 @@ class Application:
 
     def login(self, user_data):
         self.login_page.login(user_data)
-        self.home_page.wait_for_load()
-        return self.home_page
+        self.constructor_page.wait_for_load()
+        return self.constructor_page
 
     @property
     def forgot_password_page(self):
         return ForgotPasswordPage(self._driver, self._base_url)
 
     @property
-    def home_page(self):
-        return HomePage(self._driver, self._base_url)
+    def constructor_page(self):
+        return ConstructorPage(self._driver, self._base_url)
 
     @property
     def reset_password_page(self):

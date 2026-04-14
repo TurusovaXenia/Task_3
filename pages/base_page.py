@@ -1,3 +1,4 @@
+from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -40,6 +41,10 @@ class BasePage:
         self.wait_until_visible(locator)
         return self.driver.find_element(*locator)
 
+    def find_elements_with_wait(self, locator):
+        self.wait.until(EC.visibility_of_all_elements_located(locator))
+        return self.driver.find_elements(*locator)
+
     def check_element_visibility(self, locator):
         return self.driver.find_element(*locator).is_displayed()
 
@@ -58,3 +63,15 @@ class BasePage:
 
     def get_text_from_element(self, locator):
         return self.find_element_with_wait(locator).text
+
+    def wait_for_valid_text(self, locator, invalid_text):
+        return self.wait.until(
+            lambda d:
+            self.get_text_from_element(locator).isdigit() and
+            self.get_text_from_element(locator) != invalid_text
+        )
+
+    def click_to_element_with_wait(self, locator):
+        ActionChains(self.driver).move_by_offset(0, 0).click().perform()
+        self.wait.until(EC.element_to_be_clickable(locator))
+        self.driver.find_element(*locator).click()
