@@ -51,6 +51,6 @@ def created_order(app, user_for_test):
     app.login(user_for_test)
     app.constructor_page.drag_first_ingredient_and_drop_to_basket()
     app.constructor_page.click_create_order_button()
-    order_id = app.constructor_page.get_order_id()
+    order_number = app.constructor_page.get_order_number()
     app.constructor_page.click_cross_button_for_order()
-    return order_id
+    return order_number

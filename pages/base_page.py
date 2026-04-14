@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -75,3 +76,19 @@ class BasePage:
         ActionChains(self.driver).move_by_offset(0, 0).click().perform()
         self.wait.until(EC.element_to_be_clickable(locator))
         self.driver.find_element(*locator).click()
+
+    def get_element_from_list_by_containing_text(self, items_locator, target_text):
+        elements = self.find_elements_with_wait(items_locator)
+        for el in elements:
+            if target_text in el.text:
+                return el
+        raise Exception(f"Элемент с текстом {target_text} не найден в списке")
+
+    def click_to_element(self, element):
+        self.wait.until(EC.element_to_be_clickable(element)).click()
+
+    def wait_for_text_in_list(self, items_locator, text):
+        try:
+            self.wait.until(EC.text_to_be_present_in_element(items_locator, text))
+        except TimeoutException:
+            return False

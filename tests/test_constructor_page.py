@@ -39,5 +39,5 @@ class TestConstructorPage:
         app.constructor_page.drag_first_ingredient_and_drop_to_basket()
         app.constructor_page.click_create_order_button()
 
-        assert app.constructor_page.get_order_id()!= data.invalid_order_id, \
+        assert app.constructor_page.get_order_number()!= data.invalid_order_number, \
             "Заказ не был создан"

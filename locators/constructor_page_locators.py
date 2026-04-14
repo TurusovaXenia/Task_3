@@ -12,5 +12,5 @@ class ConstructorPageLocators:
     CREATE_ORDER_BUTTON = (By.XPATH, ".//button[text()='Оформить заказ']")
     LOADER_ON_CREATE_ORDER_POPUP = (By.CSS_SELECTOR,
                                     "div[class*='Modal_modal_opened'] img[class*='Modal_modal__loading']")
-    ORDER_ID = (By.CSS_SELECTOR, "h2[class*='Modal_modal']")
+    ORDER_NUMBER = (By.CSS_SELECTOR, "h2[class*='Modal_modal']")
     ORDER_POPUP_CROSS_BUTTON = (By.CSS_SELECTOR, "button[class*='Modal_modal__close']")

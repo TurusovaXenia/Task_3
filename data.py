@@ -1,2 +1,2 @@
 test_email = "test@ya.com"
-invalid_order_id = "9999"
+invalid_order_number = "9999"

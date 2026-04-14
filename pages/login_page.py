@@ -13,7 +13,7 @@ class LoginPage(BasePage):
         self.fill_input(LoginPageLocators.PASSWORD_FIELD, password)
 
     def click_login_button(self):
-        self.click_element(LoginPageLocators.LOGIN_BUTTON)
+        self.click_to_element_with_wait(LoginPageLocators.LOGIN_BUTTON)
 
     def login(self, user_data):
         self.fill_email_field(user_data["email"])
