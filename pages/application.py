@@ -1,6 +1,6 @@
+from pages.constructor_page import ConstructorPage
 from pages.forgot_password_page import ForgotPasswordPage
 from pages.header import Header
-from pages.constructor_page import ConstructorPage
 from pages.login_page import LoginPage
 from pages.order_feed_page import OrderFeedPage
 from pages.order_history_page import OrderHistoryPage

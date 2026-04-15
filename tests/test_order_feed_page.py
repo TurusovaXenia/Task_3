@@ -1,22 +1,29 @@
+import allure
 import pytest
 
 from locators.order_feed_page_locators import OrderFeedPageLocators
 
 
+@allure.suite("Страница 'Лента заказов'")
 class TestOrderFeedPage:
+    @allure.title("Проверка перехода на страницу 'Лента заказов' при клике на кнопку 'Лента заказов'")
     def test_click_order_feed_button_redirects_to_page(self, app):
-        app.constructor_page.open()
+        with allure.step("Открыть страницу 'Конструктор'"):
+            app.constructor_page.open()
         app.header.click_order_feed_button()
 
         assert app.order_feed_page.is_order_feed_box_visible(), \
             "Переход на страницу 'Лента заказов' не выполнен"
 
+    @allure.title("Проверка открытия заказа при клике на карточку заказа на странице 'Лента заказов'")
     def test_click_order_card_opens_modal(self, app, created_order):
         app.header.click_order_feed_button()
         app.order_feed_page.click_order_card_with_order_number(created_order)
 
-        assert created_order in app.order_feed_page.get_order_number_from_card()
+        with allure.step("Проверка открытия карточки для созданного заказа:"):
+            assert created_order in app.order_feed_page.get_order_number_from_card()
 
+    @allure.title("Проверка отображения заказа из страницы 'История заказов' на странице 'Лента заказов'")
     def test_order_history_item_appears_in_feed(self, app, created_order):
         app.header.click_my_profile_button()
         app.profile_page.click_order_history_button()
@@ -26,6 +33,7 @@ class TestOrderFeedPage:
         assert app.order_feed_page.is_order_in_feed(last_order_number), \
             "Последний заказ со страницы 'История заказов' не показывается на странице 'Лента заказов'"
 
+    @allure.title("Проверка добавления только что созданного заказа в список 'В работе' на странице 'Лента заказов'")
     def test_created_order_appears_in_work_list(self, app, created_order):
         app.header.click_order_feed_button()
 
@@ -39,8 +47,11 @@ class TestOrderFeedPage:
         ],
         ids=["increases_total_counter", "increases_today_counter"]
     )
+    @allure.title("Проверка увеличения счетчиков на странице 'Лента заказов' при создании заказа")
     def test_create_order(self, app, user_for_test, counter):
-        app.constructor_page.open()
+        with allure.step("Открыть страницу 'Конструктор'"):
+            app.constructor_page.open()
+
         app.login_page.click_login_button()
         app.login(user_for_test)
 
@@ -55,4 +66,5 @@ class TestOrderFeedPage:
         app.header.click_order_feed_button()
         after_order_creation_counter_value = app.order_feed_page.get_counter_value(counter)
 
-        assert after_order_creation_counter_value > before_order_creation_counter_value
+        with allure.step("Проверка увеличения значения счетчика"):
+            assert after_order_creation_counter_value > before_order_creation_counter_value

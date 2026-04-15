@@ -1,5 +1,6 @@
 import pytest
 from selenium import webdriver
+import allure
 
 from api.user_client import UserClient
 from pages.application import Application
@@ -28,33 +29,36 @@ def user_client():
 
 @pytest.fixture(scope="function")
 def user_for_test(user_client):
-    new_user_data = helpers.generate_new_user()
-    response = user_client.create_user(new_user_data)
+    with allure.step("Подготовка пользователя"):
+        new_user_data = helpers.generate_new_user()
+        response = user_client.create_user(new_user_data)
 
-    access_token = response.json().get("accessToken")
-    setup_data = {
-        "access_token": access_token,
-        "name": new_user_data["name"],
-        "email": new_user_data["email"],
-        "password": new_user_data["password"],
-    }
+        access_token = response.json().get("accessToken")
+        setup_data = {
+            "access_token": access_token,
+            "name": new_user_data["name"],
+            "email": new_user_data["email"],
+            "password": new_user_data["password"],
+        }
 
     yield setup_data
 
-    if access_token:
-        user_client.delete_user(access_token)
+    with allure.step("Удаление пользователя"):
+        if access_token:
+            user_client.delete_user(access_token)
 
 
 @pytest.fixture(scope="function")
 def created_order(app, user_for_test):
-    app.constructor_page.open()
-    app.login_page.click_login_button()
-    app.login(user_for_test)
+    with allure.step("Создание заказа для теста"):
+        app.constructor_page.open()
+        app.login_page.click_login_button()
+        app.login(user_for_test)
 
-    app.constructor_page.drag_first_ingredient_and_drop_to_basket()
-    app.constructor_page.click_create_order_button()
+        app.constructor_page.drag_first_ingredient_and_drop_to_basket()
+        app.constructor_page.click_create_order_button()
 
-    order_number = app.constructor_page.get_order_number()
-    app.constructor_page.click_cross_button_for_order()
+        order_number = app.constructor_page.get_order_number()
+        app.constructor_page.click_cross_button_for_order()
 
-    return order_number
+        return order_number
