@@ -4,16 +4,16 @@ from pages.base_page import BasePage
 
 class LoginPage(BasePage):
     def click_forgot_password_link(self):
-        self.click_element(LoginPageLocators.FORGOT_PASSWORD_LINK)
+        self.click_with_offset(LoginPageLocators.FORGOT_PASSWORD_LINK)
 
     def fill_email_field(self, email):
-        self.fill_input(LoginPageLocators.EMAIL_FIELD, email)
+        self.type_text(LoginPageLocators.EMAIL_FIELD, email)
 
     def fill_password_field(self, password):
-        self.fill_input(LoginPageLocators.PASSWORD_FIELD, password)
+        self.type_text(LoginPageLocators.PASSWORD_FIELD, password)
 
     def click_login_button(self):
-        self.click_to_element_with_wait(LoginPageLocators.LOGIN_BUTTON)
+        self.click_with_offset(LoginPageLocators.LOGIN_BUTTON)
 
     def login(self, user_data):
         self.fill_email_field(user_data["email"])
@@ -21,4 +21,4 @@ class LoginPage(BasePage):
         self.click_login_button()
 
     def is_login_button_visible(self):
-        return self.check_element_visibility(LoginPageLocators.LOGIN_BUTTON)
+        return self.is_element_visible(LoginPageLocators.LOGIN_BUTTON)

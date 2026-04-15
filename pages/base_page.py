@@ -10,7 +10,47 @@ class BasePage:
         self.wait = WebDriverWait(driver, 30)
         self.base_url = base_url
 
-    _DRAG_AND_DROP_SCRIPT = """
+    def open(self, path=""):
+        self.driver.get(f"{self.base_url}{path}")
+
+    def click_element(self, locator):
+        self.wait.until(EC.element_to_be_clickable(locator))
+        self.driver.find_element(*locator).click()
+
+    def click_existing_element(self, element):
+        self.wait.until(EC.element_to_be_clickable(element)).click()
+
+    def click_with_offset(self, locator):
+        ActionChains(self.driver).move_by_offset(0, 0).click().perform()
+        self.wait.until(EC.element_to_be_clickable(locator))
+        self.driver.find_element(*locator).click()
+
+    def wait_until_visible(self, locator):
+        return self.wait.until(EC.visibility_of_element_located(locator))
+
+    def wait_until_invisible(self, locator):
+        return self.wait.until(EC.invisibility_of_element_located(locator))
+
+    def find_element_with_wait(self, locator):
+        self.wait_until_visible(locator)
+        return self.driver.find_element(*locator)
+
+    def find_elements_with_wait(self, locator):
+        self.wait.until(EC.visibility_of_all_elements_located(locator))
+        return self.driver.find_elements(*locator)
+
+    def is_element_visible(self, locator):
+        return self.driver.find_element(*locator).is_displayed()
+
+    def type_text(self, locator, text):
+        self.wait_until_visible(locator)
+        self.driver.find_element(*locator).send_keys(text)
+
+    def get_text(self, locator):
+        return self.find_element_with_wait(locator).text
+
+    def drag_and_drop(self, source_element, target_element):
+        script = """
         var source = arguments[0];
         var target = arguments[1];
         var dataTransfer = new DataTransfer();
@@ -24,71 +64,33 @@ class BasePage:
         var dragEndEvent = new DragEvent('dragend', { dataTransfer: dataTransfer, bubbles: true });
         source.dispatchEvent(dragEndEvent);
         """
+        self.driver.execute_script(script, source_element, target_element)
 
-    def open(self, path=""):
-        self.driver.get(f"{self.base_url}{path}")
-
-    def click_element(self, locator):
-        self.wait.until(EC.element_to_be_clickable(locator))
-        self.driver.find_element(*locator).click()
-
-    def wait_until_visible(self, locator):
-        return self.wait.until(EC.visibility_of_element_located(locator))
-
-    def wait_until_invisibility(self, locator):
-        return self.wait.until(EC.invisibility_of_element_located(locator))
-
-    def find_element_with_wait(self, locator):
-        self.wait_until_visible(locator)
-        return self.driver.find_element(*locator)
-
-    def find_elements_with_wait(self, locator):
-        self.wait.until(EC.visibility_of_all_elements_located(locator))
-        return self.driver.find_elements(*locator)
-
-    def check_element_visibility(self, locator):
-        return self.driver.find_element(*locator).is_displayed()
-
-    def fill_input(self, locator, text):
-        self.wait_until_visible(locator)
-        self.driver.find_element(*locator).send_keys(text)
-
-    def wait_for_attribute_in_element(self, locator, attribute, value):
-        return self.wait.until(
-            lambda d: value in d.find_element(*locator).get_attribute(attribute),
-            message=f"Элемент {locator} не получил атрибут {attribute}='{value}'"
-        )
-
-    def drag_and_drop(self, source_element, target_element):
-        self.driver.execute_script(self._DRAG_AND_DROP_SCRIPT, source_element, target_element)
-
-    def get_text_from_element(self, locator):
-        return self.find_element_with_wait(locator).text
-
-    def wait_for_valid_text(self, locator, invalid_text):
-        return self.wait.until(
-            lambda d:
-            self.get_text_from_element(locator).isdigit() and
-            self.get_text_from_element(locator) != invalid_text
-        )
-
-    def click_to_element_with_wait(self, locator):
-        ActionChains(self.driver).move_by_offset(0, 0).click().perform()
-        self.wait.until(EC.element_to_be_clickable(locator))
-        self.driver.find_element(*locator).click()
-
-    def get_element_from_list_by_containing_text(self, items_locator, target_text):
+    def get_element_from_list_by_text(self, items_locator, target_text):
         elements = self.find_elements_with_wait(items_locator)
         for el in elements:
             if target_text in el.text:
                 return el
         raise Exception(f"Элемент с текстом {target_text} не найден в списке")
 
-    def click_to_element(self, element):
-        self.wait.until(EC.element_to_be_clickable(element)).click()
+    def wait_for_attribute(self, locator, attribute, value):
+        return self.wait.until(
+            lambda d: value in d.find_element(*locator).get_attribute(attribute)
+        )
+
+    def wait_for_valid_text(self, locator, invalid_text):
+        return self.wait.until(
+            lambda d: self.get_text(locator).isdigit() and self.get_text(locator) != invalid_text
+        )
 
     def wait_for_text_in_list(self, items_locator, text):
+        def find_text_logic(_):
+            for el in self.find_elements_with_wait(items_locator):
+                if text in el.text:
+                    return True
+            return False
+
         try:
-            self.wait.until(EC.text_to_be_present_in_element(items_locator, text))
+            return self.wait.until(find_text_logic)
         except TimeoutException:
             return False
