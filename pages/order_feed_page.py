@@ -29,4 +29,5 @@ class OrderFeedPage(BasePage):
 
     @allure.step("Получение значения каунтера из страницы 'Лента заказов'")
     def get_counter_value(self, locator):
+        self.wait_until_visible(locator)
         return self.get_text(locator)
