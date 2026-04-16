@@ -49,11 +49,12 @@ class TestConstructorPage:
                 "Счетчик ингредиента не увеличился при добавлении в заказ"
 
     @allure.title("Проверка создания заказа для авторизированного пользователя")
-    def test_authorized_user_creates_order_successfully(self, app, user_for_test):
+    def test_authorized_user_creates_order_successfully(self, app, user):
         with allure.step("Открыть страницу 'Конструктор'"):
             app.constructor_page.open()
-        app.login_page.click_login_button()
-        app.login(user_for_test)
+
+        app.constructor_page.click_login_button()
+        app.login(user)
         app.constructor_page.drag_first_ingredient_and_drop_to_basket()
         app.constructor_page.click_create_order_button()
 

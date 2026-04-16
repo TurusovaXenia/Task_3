@@ -17,7 +17,7 @@ class LoginPage(BasePage):
     def fill_password_field(self, password):
         self.type_text(LoginPageLocators.PASSWORD_FIELD, password)
 
-    @allure.step("Клик на кнопку 'Войти в аккаунт'")
+    @allure.step("Клик на кнопку 'Войти'")
     def click_login_button(self):
         self.click_with_offset(LoginPageLocators.LOGIN_BUTTON)
 

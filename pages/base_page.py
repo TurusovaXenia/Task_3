@@ -78,7 +78,7 @@ class BasePage:
             lambda d: value in d.find_element(*locator).get_attribute(attribute)
         )
 
-    def wait_for_valid_text(self, locator, invalid_text):
+    def wait_for_valid_number(self, locator, invalid_text):
         return self.wait.until(
             lambda d: self.get_text(locator).isdigit() and self.get_text(locator) != invalid_text
         )

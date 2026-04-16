@@ -6,7 +6,7 @@ from pages.base_page import BasePage
 
 
 class ConstructorPage(BasePage):
-    @allure.step("Клик на кнопку 'Войти'")
+    @allure.step("Клик на кнопку 'Войти в аккаунт'")
     def click_login_button(self):
         self.click_with_offset(ConstructorPageLocators.LOGIN_BUTTON)
 
@@ -46,10 +46,10 @@ class ConstructorPage(BasePage):
 
     @allure.step("Получить номер заказа")
     def get_order_number(self):
-        self.wait_for_valid_text(ConstructorPageLocators.ORDER_NUMBER, data.invalid_order_number)
+        self.wait_for_valid_number(ConstructorPageLocators.ORDER_NUMBER, data.invalid_order_number)
         return self.get_text(ConstructorPageLocators.ORDER_NUMBER)
 
     @allure.step("Клик на крестик")
     def click_cross_button_for_order(self):
-        self.wait_for_valid_text(ConstructorPageLocators.ORDER_NUMBER, data.invalid_order_number)
+        self.wait_for_valid_number(ConstructorPageLocators.ORDER_NUMBER, data.invalid_order_number)
         self.click_with_offset(ConstructorPageLocators.ORDER_POPUP_CROSS_BUTTON)

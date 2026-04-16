@@ -10,6 +10,7 @@ class TestOrderFeedPage:
     def test_click_order_feed_button_redirects_to_page(self, app):
         with allure.step("Открыть страницу 'Конструктор'"):
             app.constructor_page.open()
+
         app.header.click_order_feed_button()
 
         assert app.order_feed_page.is_order_feed_box_visible(), \
@@ -48,12 +49,12 @@ class TestOrderFeedPage:
         ids=["increases_total_counter", "increases_today_counter"]
     )
     @allure.title("Проверка увеличения счетчиков на странице 'Лента заказов' при создании заказа")
-    def test_create_order(self, app, user_for_test, counter):
+    def test_create_order(self, app, user, counter):
         with allure.step("Открыть страницу 'Конструктор'"):
             app.constructor_page.open()
 
-        app.login_page.click_login_button()
-        app.login(user_for_test)
+        app.constructor_page.click_login_button()
+        app.login(user)
 
         app.header.click_order_feed_button()
         before_order_creation_counter_value = app.order_feed_page.get_counter_value(counter)
