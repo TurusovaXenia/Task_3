@@ -1,0 +1,64 @@
+import allure
+import pytest
+from selenium import webdriver
+
+from api.user_client import UserClient
+from pages.application import Application
+from urls import Urls
+from utils import helpers
+
+
+@pytest.fixture(params=["chrome", "firefox"], scope="function")
+def app(request):
+    if request.param == "chrome":
+        driver = webdriver.Chrome()
+    else:
+        driver = webdriver.Firefox()
+
+    app_instance = Application(driver, Urls.BASE_URL)
+
+    yield app_instance
+
+    driver.quit()
+
+
+@pytest.fixture(scope="function")
+def user_client():
+    return UserClient(Urls.BASE_URL)
+
+
+@pytest.fixture(scope="function")
+def user(user_client):
+    with allure.step("Подготовка пользователя"):
+        new_user_data = helpers.generate_new_user()
+        response = user_client.create_user(new_user_data)
+
+        access_token = response.json().get("accessToken")
+        setup_data = {
+            "access_token": access_token,
+            "name": new_user_data["name"],
+            "email": new_user_data["email"],
+            "password": new_user_data["password"],
+        }
+
+    yield setup_data
+
+    with allure.step("Удаление пользователя"):
+        if access_token:
+            user_client.delete_user(access_token)
+
+
+@pytest.fixture(scope="function")
+def created_order(app, user):
+    with allure.step("Создание заказа для теста"):
+        app.constructor_page.open()
+        app.constructor_page.click_login_button()
+        app.login(user)
+
+        app.constructor_page.drag_first_ingredient_and_drop_to_basket()
+        app.constructor_page.click_create_order_button()
+
+        order_number = app.constructor_page.get_order_number()
+        app.constructor_page.click_cross_button_for_order()
+
+        return order_number
